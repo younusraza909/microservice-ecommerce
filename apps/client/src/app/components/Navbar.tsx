@@ -1,10 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import Searchbar from "./Searchbar";
 import { Bell, Home, ShoppingCart } from "lucide-react";
 import Logo from "./Logo";
 import ShoppingCartIcon from "./ShoppingCartIcon";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import ProfileButton from "./ProfileButton";
 
 const Navbar = () => {
   return (
@@ -22,9 +23,12 @@ const Navbar = () => {
             <Bell className="w-4 h-4 text-gray-600" />
           </Link>
           <ShoppingCartIcon />
-          <Link href="/login" className="">
-            Sign in
-          </Link>
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <ProfileButton />
+          </SignedIn>
         </div>
       </div>
     </div>
