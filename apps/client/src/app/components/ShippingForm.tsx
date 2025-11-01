@@ -39,6 +39,7 @@ const ShippingForm = ({
           type="text"
           placeholder="Enter your name"
           id="name"
+          value="John Doe"
           {...register("name")}
         />
         {errors.name && (
@@ -56,6 +57,7 @@ const ShippingForm = ({
         "
           placeholder="Enter your email"
           type="text"
+          value="john.doe@gmail.com"
           id="email"
           {...register("email")}
         />
@@ -75,6 +77,7 @@ const ShippingForm = ({
           type="text"
           placeholder="Enter your phone number"
           id="phone"
+          value="1234567"
           {...register("phone")}
         />
         {errors.phone && (
@@ -92,7 +95,8 @@ const ShippingForm = ({
         "
           type="text"
           placeholder="Enter your address"
-          id="phone"
+          id="address"
+          value="123 Main St"
           {...register("address")}
         />
         {errors.address && (
@@ -109,7 +113,8 @@ const ShippingForm = ({
          py-2 outline-none text-sm
         "
           type="text"
-          placeholder="Enter your address"
+          placeholder="Enter your city"
+          value="New York"
           id="city"
           {...register("city")}
         />

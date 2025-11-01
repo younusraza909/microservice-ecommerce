@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import ShippingForm from "../components/ShippingForm";
 import Image from "next/image";
 import useCartStore from "@/stores/cartStore";
+import StripePaymentForm from "../components/StripePaymentForm";
 
 const steps = [
   {
@@ -112,7 +113,9 @@ const CartPage = () => {
             ))
           ) : activeStep === 2 ? (
             <ShippingForm setShippingForm={setShippingForm} />
-          ) : activeStep === 3 && shippingForm ? null : (
+          ) : activeStep === 3 && shippingForm ? (
+            <StripePaymentForm shippingForm={shippingForm} />
+          ) : (
             <p className="text-sm text-gray-500">
               Please fill the shipping form first to continue
             </p>

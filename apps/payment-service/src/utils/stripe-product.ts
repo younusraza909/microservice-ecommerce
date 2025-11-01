@@ -1,102 +1,41 @@
-import type { Product, Category } from "@repo/product-db";
-import z from "zod";
+import { StripeProductType } from "@repo/types";
+import stripe from "./stripe";
 
-export type ProductType = Product;
-
-export type ProductsType = ProductType[];
-
-export type StripeProductType = {
-  id: string;
-  name: string;
-  price: number;
+export const createStripeProduct = async (item: StripeProductType) => {
+  try {
+    const res = await stripe.products.create({
+      id: item.id,
+      name: item.name,
+      default_price_data: {
+        currency: "usd",
+        unit_amount: item.price * 100,
+      },
+    });
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 };
 
-export const colors = [
-  "blue",
-  "green",
-  "red",
-  "yellow",
-  "purple",
-  "orange",
-  "pink",
-  "brown",
-  "gray",
-  "black",
-  "white",
-] as const;
+export const getStripeProductPrice = async (productId: number) => {
+  try {
+    const res = await stripe.prices.list({
+      product: productId.toString(),
+    });
+    return res.data[0]?.unit_amount;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
 
-export const sizes = [
-  "xs",
-  "s",
-  "m",
-  "l",
-  "xl",
-  "xxl",
-  "34",
-  "35",
-  "36",
-  "37",
-  "38",
-  "39",
-  "40",
-  "41",
-  "42",
-  "43",
-  "44",
-  "45",
-  "46",
-  "47",
-  "48",
-] as const;
-
-export const ProductFormSchema = z
-  .object({
-    name: z
-      .string({ message: "Product name is required!" })
-      .min(1, { message: "Product name is required!" }),
-    shortDescription: z
-      .string({ message: "Short description is required!" })
-      .min(1, { message: "Short description is required!" })
-      .max(60),
-    description: z
-      .string({ message: "Description is required!" })
-      .min(1, { message: "Description is required!" }),
-    price: z
-      .number({ message: "Price is required!" })
-      .min(1, { message: "Price is required!" }),
-    categorySlug: z
-      .string({ message: "Category is required!" })
-      .min(1, { message: "Category is required!" }),
-    sizes: z
-      .array(z.enum(sizes))
-      .min(1, { message: "At least one size is required!" }),
-    colors: z
-      .array(z.enum(colors))
-      .min(1, { message: "At least one color is required!" }),
-    images: z.record(z.string(), z.string(), {
-      message: "Image for each color is required!",
-    }),
-  })
-  .refine(
-    (data) => {
-      const missingImages = data.colors.filter(
-        (color: string) => !data.images?.[color]
-      );
-      return missingImages.length === 0;
-    },
-    {
-      message: "Image is required for each selected color!",
-      path: ["images"],
-    }
-  );
-
-export type CategoryType = Category;
-
-export const CategoryFormSchema = z.object({
-  name: z
-    .string({ message: "Name is Required!" })
-    .min(1, { message: "Name is Required!" }),
-  slug: z
-    .string({ message: "Slug is Required!" })
-    .min(1, { message: "Slug is Required!" }),
-});
+export const deleteStripeProduct = async (productId: number) => {
+  try {
+    const res = await stripe.products.del(productId.toString());
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
