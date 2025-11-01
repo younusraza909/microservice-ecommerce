@@ -1,10 +1,9 @@
 import ProductInteraction from "@/app/components/ProductInteraction";
-import { ProductsType } from "@/types";
+import { ProductType } from "@repo/types";
 import Image from "next/image";
-import React from "react";
 
 // TEMPORARY
-const product: ProductsType = {
+const product: ProductType = {
   id: 1,
   name: "Adidas CoreFit T-Shirt",
   shortDescription:
@@ -19,15 +18,9 @@ const product: ProductsType = {
     purple: "/products/1p.png",
     green: "/products/1gr.png",
   },
-};
-
-export const generateMetadata = ({ params }: { params: { id: string } }) => {
-  //  TODO GET THE PRODUCT FROM DB
-  // TEMPORARY METADATA
-  return {
-    title: `${product.name} - Trendly`,
-    description: product.shortDescription,
-  };
+  categorySlug: "test",
+  createdAt: new Date(),
+  updatedAt: new Date(),
 };
 
 const ProductPage = async ({
@@ -35,25 +28,25 @@ const ProductPage = async ({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ size: string; color: string }>;
+  searchParams: Promise<{ color: string; size: string }>;
 }) => {
   const { size, color } = await searchParams;
-  const id = (await params).id;
-  const selectedSize = size || product.sizes[0]!;
-  const selectedColor = color || product.colors[0]!;
+  const { id } = await params;
 
+  const selectedSize = size || (product.sizes[0] as string);
+  const selectedColor = color || (product.colors[0] as string);
   return (
-    <div className="flex flex-col gap-8 lg:flex-row md:gap-12 mt-12">
+    <div className="flex flex-col gap-4 lg:flex-row md:gap-12 mt-12">
       {/* IMAGE */}
-      <div className="w-full lg:w-5/12">
-        <div className="relative aspect-[2/3]">
-          <Image
-            src={product.images[selectedColor] || ""}
-            alt={product.name}
-            fill
-            className="object-contain rounded-md"
-          />
-        </div>
+      <div className="w-full lg:w-5/12 relative aspect-[2/3]">
+        <Image
+          src={
+            (product.images as Record<string, string>)?.[selectedColor] || ""
+          }
+          alt={product.name}
+          fill
+          className="object-contain rounded-md"
+        />
       </div>
       {/* DETAILS */}
       <div className="w-full lg:w-7/12 flex flex-col gap-4">

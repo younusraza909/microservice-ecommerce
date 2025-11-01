@@ -13,6 +13,7 @@
     "types": "./dist/index.d.ts"
   },
   "dependencies": {
-    "@types/node": "^24.9.2"
+    "@types/node": "^24.9.2",
+    "@repo/product-db": "workspace:*"
   }
 }

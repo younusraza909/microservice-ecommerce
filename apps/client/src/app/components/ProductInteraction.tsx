@@ -1,9 +1,10 @@
 "use client";
+
 import useCartStore from "@/stores/cartStore";
-import { ProductsType } from "@/types";
+import { ProductType } from "@repo/types";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 
 const ProductInteraction = ({
@@ -11,13 +12,13 @@ const ProductInteraction = ({
   selectedSize,
   selectedColor,
 }: {
-  product: ProductsType;
+  product: ProductType;
   selectedSize: string;
   selectedColor: string;
 }) => {
-  const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [quantity, setQuantity] = useState(1);
 
   const { addToCart } = useCartStore();
@@ -38,16 +39,15 @@ const ProductInteraction = ({
     }
   };
 
-  function handleAddToCart() {
+  const handleAddToCart = () => {
     addToCart({
       ...product,
-      quantity: quantity,
-      selectedSize: selectedSize,
-      selectedColor: selectedColor,
+      quantity,
+      selectedColor,
+      selectedSize,
     });
     toast.success("Product added to cart");
-  }
-
+  };
   return (
     <div className="flex flex-col gap-4 mt-4">
       {/* SIZE */}
@@ -111,7 +111,7 @@ const ProductInteraction = ({
           </button>
         </div>
       </div>
-      {/* ADD TO CART */}
+      {/* BUTTONS */}
       <button
         onClick={handleAddToCart}
         className="bg-gray-800 text-white px-4 py-2 rounded-md shadow-lg flex items-center justify-center gap-2 cursor-pointer text-sm font-medium"

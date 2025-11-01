@@ -1,9 +1,8 @@
 "use client";
-import { CartItemsType, ShippingFormInput } from "@/types";
+import { ShippingFormInputs } from "@repo/types";
 import { ArrowRight, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
-import PaymentForm from "../components/PaymentForm";
 import ShippingForm from "../components/ShippingForm";
 import Image from "next/image";
 import useCartStore from "@/stores/cartStore";
@@ -26,8 +25,8 @@ const steps = [
 const CartPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [shippingForm, setShippingForm] = useState<ShippingFormInput>();
-  const { cartItems, removeFromCart } = useCartStore();
+  const [shippingForm, setShippingForm] = useState<ShippingFormInputs>();
+  const { cart, removeFromCart } = useCartStore();
   const activeStep = +(searchParams.get("step") || 1);
 
   return (
@@ -64,7 +63,7 @@ const CartPage = () => {
       <div className="w-full flex flex-col lg:flex-row gap-16">
         <div className="w-full lg:w-7/12 shadow-lg border-1 border-gray-100 p-8 rounded-lg flex flex-col gap-8">
           {activeStep === 1 ? (
-            cartItems.map((item) => (
+            cart.map((item) => (
               // SINGLE CART ITEM
               <div
                 className="flex items-center justify-between"
@@ -75,7 +74,11 @@ const CartPage = () => {
                   {/* IMAGE */}
                   <div className="relative w-32 h-32 bg-gray-50 rounded-lg overflow-hidden">
                     <Image
-                      src={item.images[item.selectedColor] || ""}
+                      src={
+                        (item.images as Record<string, string>)?.[
+                          item.selectedColor
+                        ] || ""
+                      }
                       alt={item.name}
                       fill
                       className="object-contain"
@@ -109,9 +112,7 @@ const CartPage = () => {
             ))
           ) : activeStep === 2 ? (
             <ShippingForm setShippingForm={setShippingForm} />
-          ) : activeStep === 3 && shippingForm ? (
-            <PaymentForm />
-          ) : (
+          ) : activeStep === 3 && shippingForm ? null : (
             <p className="text-sm text-gray-500">
               Please fill the shipping form first to continue
             </p>
@@ -124,7 +125,7 @@ const CartPage = () => {
               <p className="text-gray-500">Subtotal</p>
               <p className="font-medium">
                 $
-                {cartItems
+                {cart
                   .reduce((acc, item) => acc + item.price * item.quantity, 0)
                   .toFixed(2)}
               </p>
@@ -142,7 +143,7 @@ const CartPage = () => {
               <p className="text-gray-800 font-semibold">Total</p>
               <p className="font-medium">
                 $
-                {cartItems
+                {cart
                   .reduce((acc, item) => acc + item.price * item.quantity, 0)
                   .toFixed(2)}
               </p>
